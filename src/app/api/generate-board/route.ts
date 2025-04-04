@@ -35,7 +35,6 @@ export async function POST(request:Request){
         return Response.json({
             success:true,
             message: "Reply registered successfully",
-            result
         },{status:201})
     } catch (error) {
         console.log("error generating board ",error)
