@@ -6,26 +6,27 @@ export async function POST(request:Request){
 
     try {
         const {row,col,username}=await request.json()
-        const result=new Array(20).fill(new Array(10).fill(0))
-        const board=new Array(20).fill(new Array(10).fill('B'))
+        const result = Array.from({ length: 20 }, () => Array(10).fill(0));
+        const board = Array.from({ length: 20 }, () => Array(10).fill('B'));
 
         for(let n=0;n<10;n++){
-            let x=(Math.random()*19)+1
-            let y=(Math.random()*9)+1
-            while((x==row && y==col) || result[x][y]=='x'){
-                x=(Math.random()*19)+1
-                y=(Math.random()*9)+1
+            let x=Math.floor(Math.random()*20)
+            let y=Math.floor(Math.random()*10)
+            while((x===row && y===col) || result[x][y]==-1){
+                x=Math.floor(Math.random()*20)
+                y=Math.floor(Math.random()*10)
             }
-            result[x][y]='x'
+            result[x][y]=-1
             for(let i=x-1;i<=x+1;i++){
                 for(let j=y-1;j<=y+1;j++){
-                    if(i>=1 && i<20 && j>=1 && j<10 && result[i][j]!='x'){
+                    if(i>=0 && i<20 && j>=0 && j<10 && result[i][j]!=-1){
                         result[i][j]=result[i][j]+1;
                     }
                 }
             }
         }
 
+        if(result[row][col]===0){
             const m = 20;
             const n = 10;
 
@@ -42,7 +43,7 @@ export async function POST(request:Request){
                 const [x, y] = queue.shift() ?? [];
                 board[x][y] = result[x][y];
 
-                if (result[x][y] === '0') {
+                if (result[x][y] === 0) {
                     for (let i = 0; i < 8; i++) {
                         const nx = x + dx[i];
                         const ny = y + dy[i];
@@ -53,24 +54,23 @@ export async function POST(request:Request){
                     }
                 }
             }
+        }
+        else board[row][col]=result[row][col];
         
         const game=new Game({
             result,
             board,
-            table:[],
+            table:[{
+                user:username,
+                moves:1
+            }],
         })
         await game.save()
-
-        const existingPlayer = game.table.find(player => player.user === username);
-        if (existingPlayer) {
-            existingPlayer.moves += 1;
-        } else {
-            game.table.push({ user: username, moves: 1 });
-        }
-        await game.save()
+        console.log("result:\n",result)
+        console.log("board:\n",board)
         return Response.json({
             success:true,
-            message: "Reply registered successfully",
+            message: "Board generated successfully",
         },{status:201})
     } catch (error) {
         console.log("error generating board ",error)

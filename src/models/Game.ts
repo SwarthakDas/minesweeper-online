@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const GameSchema=new mongoose.Schema({
     result:{
-        type:[[String]],
+        type:[[Number]],
         required:true,
     },
     board:{

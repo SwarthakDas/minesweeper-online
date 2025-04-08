@@ -19,7 +19,7 @@ export async function POST(request:Request){
             },{status:500})
         }
         
-        if(result[row][col]=='x'){
+        if(result[row][col]==-1){
             return Response.json({
                 success:true,
                 message: "Mine triggered. Game over.",
@@ -35,7 +35,7 @@ export async function POST(request:Request){
                 game.table.push({ user: username, moves: 1 });
             }
 
-            const count = board.flat().filter(cell => typeof cell==='string' && cell === 'x').length;
+            const count = result.flat().filter(cell => typeof cell==='string' && cell === -1).length;
             if(count==10){
                 return Response.json({
                     success:true,
@@ -74,7 +74,7 @@ export async function POST(request:Request){
                 const [x, y] = queue.shift() ?? [];
                 board[x][y] = result[x][y];
 
-                if (result[x][y] === '0') {
+                if (result[x][y] === 0) {
                     for (let i = 0; i < 8; i++) {
                         const nx = x + dx[i];
                         const ny = y + dy[i];
@@ -86,7 +86,7 @@ export async function POST(request:Request){
                 }
             }
             
-            const count = board.flat().filter(cell => typeof cell==='string' && cell === 'x').length;
+            const count = result.flat().filter(cell => typeof cell==='string' && cell === -1).length;
             if(count==10){
                 return Response.json({
                     success:true,
