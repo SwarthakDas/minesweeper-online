@@ -35,8 +35,8 @@ export async function POST(request:Request){
                 game.table.push({ user: username, moves: 1 });
             }
 
-            const count = result.flat().filter(cell => typeof cell==='string' && cell === -1).length;
-            if(count==10){
+            const count = board.flat().filter((cell: string) => typeof cell==='string' && cell === '-1').length;
+            if(count==20){
                 return Response.json({
                     success:true,
                     message: "Game won",
@@ -61,8 +61,8 @@ export async function POST(request:Request){
             const m = 20;
             const n = 10;
 
-            const dx = [-1, -1, -1, 0, 0, 1, 1, 1];
-            const dy = [-1, 0, 1, -1, 1, -1, 0, 1];
+            const dx = [ -1, 0, 0, 1];
+            const dy = [ 0, -1, 1, 0];
 
             const visited = Array.from({ length: m }, () => Array(n).fill(false));
             const queue:number[][] = [];
@@ -86,15 +86,15 @@ export async function POST(request:Request){
                 }
             }
             
-            const count = result.flat().filter(cell => typeof cell==='string' && cell === -1).length;
-            if(count==10){
+            const count = board.flat().filter((cell: string) => typeof cell==='string' && cell === '-1').length;
+            if(count==20){
                 return Response.json({
                     success:true,
                     message: "Game won",
                     winner:username
                 },{status:201})
             }
-
+            console.log("board:\n",board)
             await game.save()
             return Response.json({
                 success:true,

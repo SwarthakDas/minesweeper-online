@@ -9,7 +9,7 @@ export async function POST(request:Request){
         const result = Array.from({ length: 20 }, () => Array(10).fill(0));
         const board = Array.from({ length: 20 }, () => Array(10).fill('B'));
 
-        for(let n=0;n<10;n++){
+        for(let n=0;n<20;n++){
             let x=Math.floor(Math.random()*20)
             let y=Math.floor(Math.random()*10)
             while((x===row && y===col) || result[x][y]==-1){
@@ -30,8 +30,8 @@ export async function POST(request:Request){
             const m = 20;
             const n = 10;
 
-            const dx = [-1, -1, -1, 0, 0, 1, 1, 1];
-            const dy = [-1, 0, 1, -1, 1, -1, 0, 1];
+            const dx = [ -1, 0, 0, 1];
+            const dy = [ 0, -1, 1, 0];
 
             const visited = Array.from({ length: m }, () => Array(n).fill(false));
             const queue:number[][] = [];
