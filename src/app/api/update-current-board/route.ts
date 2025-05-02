@@ -6,10 +6,7 @@ export async function POST(request:Request){
 
     try {
         const {row,col,username}=await request.json()
-        const {searchParams}=new URL(request.url)
-        const queryParam={gameId:searchParams.get('gameId')}
-        const gameId=queryParam.gameId?.toString()
-        const game=await Game.findById(gameId)
+        const game = await Game.findOne().sort({ createdAt: -1 });
         const board=game?.board
         const result=game?.result
         if(!result || !board){

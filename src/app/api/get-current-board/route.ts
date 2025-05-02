@@ -1,14 +1,11 @@
 import dbConnect from "@/lib/dbConnect"
 import Game from "@/models/Game"
 
-export async function GET(request:Request){
+export async function GET(){
     await dbConnect()
 
     try {
-        const {searchParams}=new URL(request.url)
-        const queryParam={gameId:searchParams.get('gameId')}
-        const gameId=queryParam.gameId?.toString()
-        const game=await Game.findById(gameId)
+        const game = await Game.findOne().sort({ createdAt: -1 });
         const board=game?.board
         return Response.json({
             success:true,
