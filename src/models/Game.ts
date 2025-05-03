@@ -17,7 +17,7 @@ const GameSchema=new mongoose.Schema({
         type:String,
         default:""
     }
-})
+},{timestamps:true})
 
 const Game= mongoose.models.Game || mongoose.model("Game",GameSchema)
 export default Game

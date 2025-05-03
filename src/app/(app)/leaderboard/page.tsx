@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
+
 
 interface LeaderboardEntry {
   username: string;
@@ -9,9 +10,8 @@ interface LeaderboardEntry {
 }
 
 const Leaderboard = () => {
-  const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  
+  const router=useRouter()
   useEffect(() => {
     // Load leaderboard data from localStorage
     const storedData = localStorage.getItem("minesweeper_leaderboard");
@@ -35,7 +35,7 @@ const Leaderboard = () => {
             <h1 className="text-3xl font-bold text-blue-900">Leaderboard</h1>
             <div className="space-x-2">
               <Button
-                onClick={() => navigate("/")}
+                onClick={() => router.replace("/")}
                 variant="outline"
                 className="border-blue-300 text-blue-700 hover:bg-blue-50"
               >
@@ -49,7 +49,7 @@ const Leaderboard = () => {
               <h2 className="text-xl text-gray-500 font-medium mb-4">No games played yet</h2>
               <p className="text-gray-400 mb-6">Complete a game to see your score on the leaderboard</p>
               <Button
-                onClick={() => navigate("/")}
+                onClick={() => router.replace("/")}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 Start Playing
