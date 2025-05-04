@@ -3,14 +3,17 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button"
+
 
 const MinesweeperGame = () => {
   const router=useRouter()
   const [username, setUsername] = useState("");
-  const [gameState, setGameState] = useState<"pre-game" | "playing" | "game-lost" | "game-won">("pre-game");
   const [loser, setLoser] = useState("");
+  const [winner,setWinner]=useState("")
   const [board,setBoard]=useState<Array<Array<any>>>([])
   const [over,setOver]=useState(false)
+  const [toggleStart,setToggleStart]=useState(true)
 
   const currentBoard=async()=>{
     try {
@@ -23,7 +26,6 @@ const MinesweeperGame = () => {
         throw new Error(msg.message||"Board fetching failed")
       }
       setBoard(msg.board)
-      setGameState("playing")
     } catch (error) {
       console.error("Error getting board")
       toast.error("Failed to fetch game board");
@@ -62,14 +64,15 @@ const MinesweeperGame = () => {
           throw new Error(msg.message||"Board updation failed")
         }
         if(msg.message==="Game won"){
-          setGameState("game-won")
           setOver(true)
+          setWinner(username)
+          setToggleStart(false)
           toast.success("Congratulations! You won!");
         }
         else if(msg.message==="Mine triggered. Game over."){
-          setGameState("game-lost")
           setLoser(username)
           setOver(true)
+          setToggleStart(false)
           toast.error("You hit a mine! Game over!");
         }
         else if(msg.message==="Board updated"){
@@ -103,11 +106,9 @@ const MinesweeperGame = () => {
       }
       await currentBoard();
       toast.success("Game started! Watch out for mines!");
-      setGameState("playing");
       setOver(false)
     } catch (error) {
       console.error("Error generating board", error);
-      setGameState("pre-game");
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -118,9 +119,11 @@ const MinesweeperGame = () => {
   if(over){
    return ( <div>
       <h1>Welcome to minesweeper</h1>
-      <h2>Start game</h2>
+      <h1>Player: {username}</h1>
+      <Button onClick={()=>setToggleStart(true)}>Start Game</Button>
+      <h2>{loser===""?`Winner: ${winner}`:`Loser: ${loser}`}</h2>
       <div className="grid grid-cols-10 gap-2 bg-gray-200 p-3 rounded-xl shadow-inner">
-        {board.map((row,rowIndex)=>(
+        {toggleStart && board.map((row,rowIndex)=>(
           row.map((cell,colIndex)=>(
             <button
             key={rowIndex-colIndex}
@@ -138,6 +141,7 @@ const MinesweeperGame = () => {
   return (
     <div>
       <h1>Welcome to minesweeper</h1>
+      <h1>Player: {username}</h1>
       <div className="grid grid-cols-10 gap-2 bg-gray-200 p-3 rounded-xl shadow-inner">
         {board.map((row,rowIndex)=>(
           row.map((cell,colIndex)=>(
