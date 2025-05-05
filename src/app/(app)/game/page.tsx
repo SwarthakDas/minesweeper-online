@@ -139,16 +139,22 @@ const MinesweeperGame = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome to minesweeper</h1>
-      <h1>Player: {username}</h1>
-      <div className="grid grid-cols-10 gap-2 bg-gray-200 p-3 rounded-xl shadow-inner">
+    <div className="min-h-screen items-center bg-gradient-to-b from-blue-50 to-blue-200 p-4">
+      <h1 className="text-2xl font-bold text-indigo-700">Welcome to minesweeper</h1>
+      <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-black text-2xl">Player:</h2>
+            <h1 className="text-2xl font-bold text-blue-900">{username}</h1>
+      </div>
+      <Button className="absolute right-1 top-5" onClick={()=>router.replace("/leaderboard")}>Leaderboard</Button>
+      <div className="grid grid-cols-10 gap-2 bg-gray-200 p-3 rounded-xl shadow-inner h-full w-full max-w-[400px] mx-auto">
         {board.map((row,rowIndex)=>(
           row.map((cell,colIndex)=>(
             <button
             key={rowIndex-colIndex}
-            onClick={()=>handleCellClick(rowIndex,colIndex)}
-            className={`border-black border-2 rounded-sm text-blue-600 ${cell==='B'?'bg-blue-600':'bg-white'}`}
+            onClick={()=>cell==='B' && handleCellClick(rowIndex,colIndex)}
+            className={`rounded-sm text-blue-600 ${cell==='B'?'bg-blue-600':'bg-white'}
+           rounded flex items-center justify-center
+            transition-all duration-150 text-sm font-bold transform hover:scale-105 active:scale-95 aspect-square`}
             >
               {cell}
             </button>

@@ -1,31 +1,50 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
+import { toast } from "sonner";
 
 interface LeaderboardEntry {
   username: string;
   moves: number;
-  timestamp: number;
 }
 
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const router=useRouter()
   useEffect(() => {
-    // Load leaderboard data from localStorage
-    const storedData = localStorage.getItem("minesweeper_leaderboard");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData) as LeaderboardEntry[];
-      // Sort by moves in descending order
-      parsedData.sort((a, b) => b.moves - a.moves);
-      setLeaderboard(parsedData);
+    const init=async()=>{
+    try {
+      toast.info("Getting current leaderboard...");
+      const response=await fetch(`http://localhost:3000/api/get-leaderboard`,{
+        method:"GET",
+        headers:{"Content-Type":"application/json"},
+      })
+      const msg=await response.json()
+      if(!response.ok){
+        throw new Error(msg.message||"Board generating failed")
+      }
+      setLeaderboard(
+        msg.leaderboard
+          .map((entry: any) => ({
+            username: entry.user,
+            moves: Number(entry.moves)
+          }))
+          .sort((a:any, b:any) => a.moves - b.moves)
+      );      
+      toast.success("Leaderboard Fetched");
+    } catch (error) {
+      console.error("Error getting leaderboard", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
+    }
+    init()
   }, []);
-  
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString();
-  };
   
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-blue-50 to-blue-100 p-4">
@@ -35,11 +54,11 @@ const Leaderboard = () => {
             <h1 className="text-3xl font-bold text-blue-900">Leaderboard</h1>
             <div className="space-x-2">
               <Button
-                onClick={() => router.replace("/")}
+                onClick={() => router.replace("/game")}
                 variant="outline"
                 className="border-blue-300 text-blue-700 hover:bg-blue-50"
               >
-                New Game
+                Return to Board
               </Button>
             </div>
           </div>
@@ -63,7 +82,6 @@ const Leaderboard = () => {
                     <th className="px-6 py-3 rounded-tl-lg">#</th>
                     <th className="px-6 py-3">Username</th>
                     <th className="px-6 py-3 text-right">Moves</th>
-                    <th className="px-6 py-3 text-right rounded-tr-lg">Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -84,9 +102,6 @@ const Leaderboard = () => {
                       </td>
                       <td className="px-6 py-4 text-right text-blue-700 font-bold">
                         {entry.moves}
-                      </td>
-                      <td className="px-6 py-4 text-right text-gray-500">
-                        {formatDate(entry.timestamp)}
                       </td>
                     </tr>
                   ))}

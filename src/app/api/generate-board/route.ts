@@ -30,8 +30,8 @@ export async function POST(request:Request){
             const m = 20;
             const n = 10;
 
-            const dx = [ -1, 0, 0, 1];
-            const dy = [ 0, -1, 1, 0];
+            const dx = [ -1, 0, 0, 1,-1,-1,1,1];
+            const dy = [ 0, -1, 1, 0,-1,1,-1,1];
 
             const visited = Array.from({ length: m }, () => Array(n).fill(false));
             const queue:number[][] = [];
