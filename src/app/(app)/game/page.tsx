@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button"
 
-
 const MinesweeperGame = () => {
   const router=useRouter()
   const [username, setUsername] = useState("");
@@ -117,24 +116,47 @@ const MinesweeperGame = () => {
     }
   };
   if(over){
-   return ( <div>
-      <h1>Welcome to minesweeper</h1>
-      <h1>Player: {username}</h1>
-      <Button onClick={()=>setToggleStart(true)}>Start Game</Button>
-      <h2>{loser===""?`Winner: ${winner}`:`Loser: ${loser}`}</h2>
-      <div className="grid grid-cols-10 gap-2 bg-gray-200 p-3 rounded-xl shadow-inner">
-        {toggleStart && board.map((row,rowIndex)=>(
+   return ( <div className="bg-gradient-to-b from-blue-50 to-blue-100 min-h-screen">
+      <h1 className="text-2xl font-bold text-indigo-700">Welcome to minesweeper</h1>
+      <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-black text-2xl">Player:</h2>
+            <h1 className="text-2xl font-bold text-blue-900">{username}</h1>
+      </div>
+      <div className="flex flex-col items-center justify-center  p-4">
+      <div className="w-full max-w-md animate-scale-in">
+        <div className="bg-white rounded-xl shadow-lg p-8 border border-blue-100">
+          <h1 className={`text-3xl font-bold text-center ${loser===""?`text-blue-500`:`text-red-500`} mb-8`}>{loser===""?`Winner: ${winner}`:`Loser: ${loser}`}</h1>
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+              onClick={()=>setToggleStart(true)}>
+              Start Game
+            </Button>
+        </div>
+        <div className="mt-6 text-center">
+          <a 
+            href="/leaderboard" 
+            className="text-blue-600 hover:text-blue-800 underline text-sm transition-colors"
+          >
+            View Leaderboard
+          </a>
+        </div>
+      </div>
+    </div>
+    {toggleStart && <div className="grid grid-cols-10 gap-2 bg-gray-200 p-3 rounded-xl shadow-inner h-full w-full max-w-[400px] mx-auto">
+         {board.map((row,rowIndex)=>(
           row.map((cell,colIndex)=>(
             <button
             key={rowIndex-colIndex}
             onClick={()=>startGame(rowIndex,colIndex)}
-            className={`border-black border-2 rounded-sm text-blue-600 bg-blue-600`}
+            className={`rounded-sm text-blue-600 bg-blue-600 flex items-center justify-center
+            transition-all duration-150 text-sm font-bold transform hover:scale-105 active:scale-95 aspect-square`}
             >
               B
             </button>
           ))
         ))}
-      </div>
+      </div>}
     </div>)
   }
 
