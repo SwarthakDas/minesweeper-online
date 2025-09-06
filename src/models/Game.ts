@@ -16,6 +16,15 @@ const GameSchema=new mongoose.Schema({
     loser:{
         type:String,
         default:""
+    },
+    winner: {
+        type: String,
+        default: ""
+    },
+    gameStatus: {
+        type: String,
+        enum: ['active', 'won', 'lost'],
+        default: 'active'
     }
 },{timestamps:true})
 
